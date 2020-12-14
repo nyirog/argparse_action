@@ -10,6 +10,14 @@ Welcome to argparse_action's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+API reference
+-------------
+
+.. toctree::
+   :maxdepth: 2
+
+   api/argparse_action
+
 
 
 Indices and tables
