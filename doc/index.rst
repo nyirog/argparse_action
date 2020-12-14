@@ -55,6 +55,7 @@ Articles
    :maxdepth: 2
 
    articles/getting_started
+   articles/tutorial
 
 API reference
 -------------
