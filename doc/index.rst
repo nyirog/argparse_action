@@ -10,6 +10,14 @@ Welcome to argparse_action's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Articles
+-------------
+
+.. toctree::
+   :maxdepth: 2
+
+   articles/getting_started
+
 API reference
 -------------
 
