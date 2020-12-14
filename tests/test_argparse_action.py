@@ -169,6 +169,45 @@ class ArgparseActionTest(unittest.TestCase):
         namespace = self.parse_args("action --option value")
         self.assertEqual("value", namespace.action(namespace))
 
+    def test_varg_will_be_nargs_star_cli_argument(self):
+        self.decorate(func_with_varg, "action")
+
+        namespace = self.parse_args("action a b c")
+        self.assertEqual(("a", "b", "c"), namespace.action(namespace))
+
+        namespace = self.parse_args("action")
+        self.assertEqual((), namespace.action(namespace))
+
+    def test_arg_can_be_exposed_with_varg(self):
+        self.decorate(func_with_arg_and_varg, "action")
+
+        namespace = self.parse_args("action egg. spam spamspam")
+        self.assertEqual(["egg.spam", "egg.spamspam"], namespace.action(namespace))
+
+    def test_varg_can_be_exposed_defaulted_value(self):
+        self.decorate(func_with_varg_and_defaulted_arg, "action")
+
+        namespace = self.parse_args("action egg. eggegg.")
+        self.assertEqual(["egg.spam", "eggegg.spam"], namespace.action(namespace))
+
+        namespace = self.parse_args("action egg. eggegg. --option ham")
+        self.assertEqual(["egg.ham", "eggegg.ham"], namespace.action(namespace))
+
+    def test_arg_varg_and_defaulted_value_can_be_exposed_together(self):
+        self.decorate(func_with_arg_varg_and_defaulted_arg, "action")
+
+        namespace = self.parse_args("action ham. egg. eggegg.")
+        self.assertEqual(
+            ["ham.egg.spam", "ham.eggegg.spam"],
+            namespace.action(namespace)
+        )
+
+        namespace = self.parse_args("action ham. egg. eggegg. --option cheese")
+        self.assertEqual(
+            ["ham.egg.cheese", "ham.eggegg.cheese"],
+            namespace.action(namespace)
+        )
+
 
 def simple_func():
     return "simple"
@@ -212,3 +251,19 @@ def func_with_keyword_only_arg(*, arg):
 
 def func_with_defaulted_keyword_only_arg(*, option="default"):
     return option
+
+
+def func_with_varg(*args):
+    return args
+
+
+def func_with_arg_and_varg(arg, *args):
+    return [arg + s for s in args]
+
+
+def func_with_varg_and_defaulted_arg(*args, option="spam"):
+    return [arg + option for arg in args]
+
+
+def func_with_arg_varg_and_defaulted_arg(arg, *args, option="spam"):
+    return [arg + a + option for a in args]

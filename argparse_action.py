@@ -58,6 +58,8 @@ def add_action(parser, func: callable):
 
     Bool default values will be handled as flags ("store_true", "store_false").
     The bool option negates its default value.
+
+    *args parameters will be handled as nargs='*' arguments.
     """
     sig = _add_arguments(parser, func)
     action = _wrap_action(func, sig)
@@ -68,8 +70,12 @@ def _add_arguments(parser, func):
     sig = inspect.signature(func)
 
     for name, param in sig.parameters.items():
-        if param.default == param.empty:
+        if param.kind == param.VAR_POSITIONAL:
+            parser.add_argument(name, nargs="*")
+
+        elif param.default == param.empty:
             parser.add_argument(name, type=_get_annotation(param))
+
         else:
             _add_option(parser, name, param)
 
@@ -116,11 +122,37 @@ def _is_bool(param):
 def _wrap_action(func, sig):
     def action(namespace):
         namespace_vars = vars(namespace)
-        parameters = {name: namespace_vars[name] for name in sig.parameters}
 
-        return func(**parameters)
+        args = [
+            namespace_vars[name]
+            for name, param in sig.parameters.items()
+            if param.kind not in {param.VAR_POSITIONAL, param.KEYWORD_ONLY}
+        ]
+
+        varg_name = _get_varg_name(sig)
+
+        if varg_name is not None:
+            args.extend(namespace_vars[varg_name])
+
+        kwargs = {
+            name: namespace_vars[name]
+            for name, param in sig.parameters.items()
+            if param.kind == param.KEYWORD_ONLY
+        }
+
+        return func(*args, **kwargs)
 
     return action
+
+
+def _get_varg_name(sig):
+    names = (
+        name
+        for name, param in sig.parameters.items()
+        if param.kind == param.VAR_POSITIONAL
+    )
+
+    return next(names, None)
 
 
 def _conv_to_cli_option(name):

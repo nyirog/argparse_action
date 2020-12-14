@@ -143,3 +143,32 @@ CLI option flaf from boolean default value
 
    $ python3 my_script.py echo hello --upper
    HELLO
+
+
+*arg parameter is handled as nargs=* option
+-------------------------------------------
+
+.. code-block:: python
+
+   @action.add()
+   def spam(word, *spams):
+       for spam in spams:
+           print(word + spam)
+
+.. code-block::
+
+   $ python3 my_script.py spam -h
+   usage: my_script.py spam [-h] word [spams ...]
+
+   positional arguments:
+     word
+     spams
+
+   optional arguments:
+     -h, --help  show this help message and exit
+
+   $ python3 my_script.py spam egg
+
+   $ python3 my_script.py spam egg. spam spam-spam
+   egg.spam
+   egg.spam-spam
