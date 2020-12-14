@@ -10,6 +10,44 @@ Welcome to argparse_action's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Concept
+-------
+
+``argparse_action`` aims to be a minimalistic extension of ``argparse`` and creates
+cli options from the function signature given by ``inspect.signature``.
+
+
+Example
+.......
+
+.. code-block:: python
+
+   import argparse
+   import argparse_action
+
+   parser = argparse.ArgumentParser()
+   action = argparse_action.Action(parser)
+
+   @action.add("e")
+   def echo(word, upper=False):
+       print(word.upper() if upper else word)
+
+   namespace = pasrer.parse_args()
+   namespace.action(namespace)
+
+Asumes that the code above is saved as ``my_script.py``:
+
+.. code-block::
+
+   $ python3 my_script.py echo hello
+   hello
+
+   $ python3 my_script.py e hello
+   hello
+
+   $ python3 my_script.py echo --upper hello
+   HELLO
+
 Articles
 -------------
 
