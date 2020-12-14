@@ -1,0 +1,214 @@
+import unittest
+import argparse
+import contextlib
+import io
+
+import argparse_action
+
+
+class ArgparseActionTest(unittest.TestCase):
+    def setUp(self):
+        self.parser = argparse.ArgumentParser()
+        self.action = argparse_action.Action(self.parser)
+
+    def decorate(self, func, *aliases):
+        wrapper = self.action.add(*aliases)
+        wrapper(func)
+
+    def parse_args(self, command_line):
+        return self.parser.parse_args(command_line.split())
+
+    def test_command_is_mandatory(self):
+        self.decorate(simple_func)
+
+        with io.StringIO() as buf, contextlib.redirect_stderr(buf):
+            with self.assertRaises(SystemExit):
+                self.parse_args("")
+
+    def test_command_has_to_be_a_registered_function(self):
+        self.decorate(simple_func)
+
+        with io.StringIO() as buf, contextlib.redirect_stderr(buf):
+            with self.assertRaises(SystemExit):
+                self.parse_args("unknown")
+
+    def test_function_name_is_valid_command(self):
+        self.decorate(simple_func)
+        namespace = self.parse_args("simple-func")
+
+        self.assertIn("action", vars(namespace))
+
+    def test_action_can_be_called_without_parameters(self):
+        self.decorate(simple_func)
+        namespace = self.parse_args("simple-func")
+
+        self.assertEqual("simple", namespace.action(namespace))
+
+    def test_aliases_are_valid_commands(self):
+        self.decorate(simple_func, "alias")
+        namespace = self.parse_args("alias")
+
+        self.assertIn("action", vars(namespace))
+
+    def test_function_parameter_is_converted_to_cli_argument(self):
+        self.decorate(func_with_arg, "action")
+        namespace = self.parse_args("action value")
+
+        self.assertEqual("value", namespace.arg)
+
+    def test_multiple_function_parameters_can_be_added(self):
+        self.decorate(func_with_multiple_args, "action")
+        namespace = self.parse_args("action first second")
+
+        self.assertEqual("first", namespace.a)
+        self.assertEqual("second", namespace.b)
+
+    def test_action_can_be_called_with_cli_arguments(self):
+        self.decorate(func_with_multiple_args, "action")
+        namespace = self.parse_args("action first_ second")
+
+        self.assertEqual("first_second", namespace.action(namespace))
+
+    def test_cli_arguments_are_mandatory(self):
+        self.decorate(func_with_multiple_args, "action")
+
+        with io.StringIO() as buf, contextlib.redirect_stderr(buf):
+            with self.assertRaises(SystemExit):
+                self.parse_args("action first")
+
+    def test_cli_argument_follows_the_type_annotations(self):
+        self.decorate(func_arg_with_annotation, "action")
+        namespace = self.parse_args("action 42")
+
+        self.assertEqual(42, namespace.number)
+
+    def test_cli_argument_checks_the_type_annotations(self):
+        self.decorate(func_arg_with_annotation, "action")
+
+        with io.StringIO() as buf, contextlib.redirect_stderr(buf):
+            with self.assertRaises(SystemExit):
+                self.parse_args("action invalid")
+
+    def test_defaulted_arg_is_handled_as_cli_option(self):
+        self.decorate(func_with_defaulted_arg, "action")
+        namespace = self.parse_args("action --option any")
+
+        self.assertEqual("any", namespace.option)
+
+    def test_default_values_will_be_added_to_options(self):
+        self.decorate(func_with_defaulted_arg, "action")
+        namespace = self.parse_args("action")
+
+        self.assertEqual("default", namespace.option)
+
+    def test_cli_option_follows_the_type_annotations(self):
+        self.decorate(func_defaulted_arg_with_annotation, "action")
+        namespace = self.parse_args("action --option 42")
+
+        self.assertEqual(42, namespace.option)
+
+    def test_action_can_be_called_with_options(self):
+        self.decorate(func_defaulted_arg_with_annotation, "action")
+        namespace = self.parse_args("action --option 32")
+
+        self.assertEqual(42, namespace.action(namespace))
+
+    def test_cli_option_checks_the_type_annotations(self):
+        self.decorate(func_defaulted_arg_with_annotation, "action")
+
+        with io.StringIO() as buf, contextlib.redirect_stderr(buf):
+            with self.assertRaises(SystemExit):
+                self.parse_args("action --option  invalid")
+
+    def test_action_can_be_called_with_argumets_and_options(self):
+        self.decorate(func_with_arg_and_defaulted_arg, "action")
+        namespace = self.parse_args("action arg_ --option opt")
+        self.assertEqual("arg_opt", namespace.action(namespace))
+
+    def test_function_can_be_exposed_to_cli_without_its_name(self):
+        self.parser = argparse.ArgumentParser()
+        argparse_action.add_action(self.parser, func_with_arg_and_defaulted_arg)
+
+        namespace = self.parse_args("one_ --option two")
+        self.assertEqual("one_two", namespace.action(namespace))
+
+    def test_bool_option_does_not_have_cli_values(self):
+        self.decorate(func_arg_with_false_default_value, "action")
+        namespace = self.parse_args("action --flag")
+
+        self.assertTrue(namespace.flag)
+
+        with io.StringIO() as buf, contextlib.redirect_stderr(buf):
+            with self.assertRaises(SystemExit):
+                self.parse_args("action --flag value")
+
+    def test_bool_option_handles_default_value(self):
+        self.decorate(func_arg_with_false_default_value, "action")
+        namespace = self.parse_args("action")
+
+        self.assertFalse(namespace.flag)
+
+    def test_bool_option_negates_default_value(self):
+        self.decorate(func_arg_with_true_default_value, "action")
+        namespace = self.parse_args("action --flag")
+
+        self.assertFalse(namespace.flag)
+
+    def test_keyword_only_argument_is_handled(self):
+        self.decorate(func_with_keyword_only_arg, "action")
+        namespace = self.parse_args("action value")
+
+        self.assertEqual("value", namespace.action(namespace))
+
+    def test_defaulted_keyword_only_argument_will_be_a_cli_option(self):
+        self.decorate(func_with_defaulted_keyword_only_arg, "action")
+
+        namespace = self.parse_args("action")
+        self.assertEqual("default", namespace.action(namespace))
+
+        namespace = self.parse_args("action --option value")
+        self.assertEqual("value", namespace.action(namespace))
+
+
+def simple_func():
+    return "simple"
+
+
+def func_with_arg(arg):
+    return arg
+
+
+def func_with_multiple_args(a, b):
+    return a + b
+
+
+def func_arg_with_annotation(number: int):
+    return number
+
+
+def func_with_defaulted_arg(option="default"):
+    return arg
+
+
+def func_with_arg_and_defaulted_arg(arg, option="default"):
+    return arg + option
+
+
+def func_defaulted_arg_with_annotation(option: int=10):
+    return option + 10
+
+
+def func_arg_with_false_default_value(flag=False):
+    return flag
+
+
+def func_arg_with_true_default_value(flag=True):
+    return flag
+
+
+def func_with_keyword_only_arg(*, arg):
+    return arg
+
+
+def func_with_defaulted_keyword_only_arg(*, option="default"):
+    return option
