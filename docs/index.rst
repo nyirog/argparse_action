@@ -48,8 +48,23 @@ Asumes that the code above is saved as ``my_script.py``:
    $ python3 my_script.py echo --upper hello
    HELLO
 
+
+Installation
+------------
+
+.. code-block::
+
+   pip install argparse_action
+
+Development
+-----------
+
+``argparse_action`` development is managed on github_.
+
+.. _github: https://github.com/nyirog/argparse_action
+
 Articles
--------------
+--------
 
 .. toctree::
    :maxdepth: 2
