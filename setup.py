@@ -18,6 +18,12 @@ setup(
     maintainer_email="gergo.nyiro@gmail.com",
     py_modules=["argparse_action"],
     python_requires='>=3.6',
+    url="https://github.com/nyirog/argparse_action",
+    project_urls={
+        "Documentation": "https://argparse-action.readthedocs.io/en/latest/",
+        "Source": "https://github.com/nyirog/argparse_action",
+        "Tracker": "https://github.com/nyirog/argparse_action/issues",
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
