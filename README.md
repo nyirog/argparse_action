@@ -42,3 +42,13 @@ python3 setup.py install
 ```
 make test
 ```
+
+## Documentation
+
+Documentation can be build with the `doc` make target:
+
+```
+make doc
+```
+
+Online version can be read at [readthedocs.org](https://argparse-action.readthedocs.io/en/latest/index.html).
