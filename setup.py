@@ -4,16 +4,13 @@ from setuptools import setup
 with open("README.md") as fp:
     long_description = fp.read()
 
-with open("LICENSE") as fp:
-    licence = fp.read()
-
 setup(
     name="argparse_action",
     version="0.1.0",
     description="untility module for argparse to create cli ",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    license=licence,
+    license="Apache 2",
     maintainer="Nyiro Gergo",
     maintainer_email="gergo.nyiro@gmail.com",
     py_modules=["argparse_action"],
