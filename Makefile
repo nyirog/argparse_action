@@ -13,7 +13,7 @@ dev:
 
 clean:
 	-rm -rf .venv
-	-rm -rf doc/_build
+	-rm -rf docs/_build
 
 doc: dev
-	.venv/bin/sphinx-build -b html doc doc/_build
+	.venv/bin/sphinx-build -b html docs docs/_build
