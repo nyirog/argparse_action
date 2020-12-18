@@ -1,0 +1,9 @@
+$ python3 main.py spam -h
+usage: main.py spam [-h] word [spams ...]
+
+positional arguments:
+  word
+  spams
+
+optional arguments:
+  -h, --help  show this help message and exit

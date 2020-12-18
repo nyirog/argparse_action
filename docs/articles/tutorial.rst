@@ -5,170 +5,69 @@ Tutorial
    :maxdepth: 2
    :caption: Contents:
 
-The tutorial assumes that the example snippets are saved as ``my_script.py``.
+The tutorial assumes that the example snippets are saved as ``main.py``.
 
 Expose single function
 ----------------------
 
-.. code-block:: python
+.. literalinclude:: /examples/expose_single_function/main.py
+  :language: python
 
-   "Example script for argparse_action"
-   import argparse
-   import argparse_action
+.. literalinclude:: /examples/expose_single_function/help
 
-   def echo(word):
-       print(word)
-
-   parser = argparse.ArgumentParser(description=__doc__)
-   argparse_action.add_action(parser, echo)
-   namespace = parser.parse_args()
-   namespace.action(namespace)
-
-.. code-block::
-
-   $ python3 my_script.py -h
-   usage: my_script.py [-h] word
-
-   Example script for argparse_action
-
-   positional arguments:
-     word
-
-   optional arguments:
-     -h, --help  show this help message and exit
-
-   $ python3 echo.py hello
-   hello
+.. literalinclude:: /examples/expose_single_function/call
 
 Expose multiple functions as commands
 -------------------------------------
 
-.. code-block:: python
+.. literalinclude:: /examples/expose_multiple_functions_as_commands/main.py
+  :language: python
 
-   "Example script for argparse_action"
-   import argparse
-   import argparse_action
+.. literalinclude:: /examples/expose_multiple_functions_as_commands/help
 
-   parser = argparse.ArgumentParser(description=__doc__)
-   action = argparse_action.Action(parser)
+.. literalinclude:: /examples/expose_multiple_functions_as_commands/cmd_echo
 
-   @action.add()
-   def echo(parameter):
-       "echo the cli argument"
-       print(parameter)
-
-   @action.add()
-   def oche(parameter):
-       "echo the revered cli argrument"
-       acc = list(parameter)
-       acc.reverse()
-       print("".join(acc))
-
-   namespace = parser.parse_args()
-   namespace.action(namespace)
-
-.. code-block::
-
-   $ python3 my_script.py  -h
-   usage: my_script.py [-h] command ...
-
-   Example script for argparse_action
-
-   positional arguments:
-     command
-       echo  echo the cli argument
-       oche  echo the revered cli argument
-
-   optional arguments:
-     -h, --help  show this help message and exit
-
-   $ python3 my_script.py echo hello
-   hello
-
-   $ python3 my_script.py oche hello
-   olleh
-
+.. literalinclude:: /examples/expose_multiple_functions_as_commands/cmd_oche
 
 Register command alias
 ----------------------
 
-.. code-block:: python
+.. literalinclude:: /examples/register_command_alias/main.py 
+  :language: python
 
-   @action.add("print", "p")
-   def echo(parameter):
-       "echo the cli argument"
-       print(parameter)
+.. literalinclude:: /examples/register_command_alias/cmd_echo
 
-.. code-block::
+.. literalinclude:: /examples/register_command_alias/cmd_print
 
-   $ python3 my_script.py echo hello
-   hello
-
-   $ python3 my_script.py print bello
-   bello
-
-   $ python3 my_script.py p hello-bello
-   hello-bello
+.. literalinclude:: /examples/register_command_alias/cmd_p
 
 CLI option from default value
 -----------------------------
 
-.. code-block:: python
+.. literalinclude:: /examples/cli_option_from_default_value/main.py
+  :language: python
 
-   @action.add()
-   def echo(word, name="joe"):
-       print(f"{word} {name}")
+.. literalinclude:: /examples/cli_option_from_default_value/call
 
-.. code-block::
+.. literalinclude:: /examples/cli_option_from_default_value/call_sam
 
-   $ python3 my_script.py echo hello
-   hello joe
 
-   $ python3 my_script.py echo hello --name sam
-   hello sam
-
-CLI option flaf from boolean default value
+CLI option flag from boolean default value
 ------------------------------------------
 
-.. code-block:: python
+.. literalinclude:: /examples/cli_option_flag_from_bool_default_value/main.py
+  :language: python
 
-   @action.add()
-   def echo(word, upper=False):
-       print(word.upper() if upper else word)
+.. literalinclude:: /examples/cli_option_flag_from_bool_default_value/call
 
-.. code-block::
+.. literalinclude:: /examples/cli_option_flag_from_bool_default_value/call_upper
 
-   $ python3 my_script.py echo hello
-   hello
+varg parameter is handled as nargs=* argument
+---------------------------------------------
 
-   $ python3 my_script.py echo hello --upper
-   HELLO
+.. literalinclude:: /examples/varg_parameter_is_handled_as_nargs_argument/main.py
+  :language: python
 
+.. literalinclude:: /examples/varg_parameter_is_handled_as_nargs_argument/call
 
-*arg parameter is handled as nargs=* option
--------------------------------------------
-
-.. code-block:: python
-
-   @action.add()
-   def spam(word, *spams):
-       for spam in spams:
-           print(word + spam)
-
-.. code-block::
-
-   $ python3 my_script.py spam -h
-   usage: my_script.py spam [-h] word [spams ...]
-
-   positional arguments:
-     word
-     spams
-
-   optional arguments:
-     -h, --help  show this help message and exit
-
-   $ python3 my_script.py spam egg
-
-   $ python3 my_script.py spam egg. spam spam-spam
-   egg.spam
-   egg.spam-spam
+.. literalinclude:: /examples/varg_parameter_is_handled_as_nargs_argument/call_spam

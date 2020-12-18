@@ -1,0 +1,12 @@
+$ python3 main.py  -h
+usage: main.py [-h] command ...
+
+Example script for argparse_action
+
+positional arguments:
+  command
+    echo      echo the cli argument
+    oche      echo the revered cli argument
+
+optional arguments:
+  -h, --help  show this help message and exit

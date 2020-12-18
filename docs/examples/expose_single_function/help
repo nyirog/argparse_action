@@ -1,0 +1,10 @@
+$ python3 main.py -h
+usage: main.py [-h] word
+
+Example script for argparse_action
+
+positional arguments:
+  word
+
+optional arguments:
+  -h, --help  show this help message and exit
