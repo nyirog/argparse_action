@@ -1,4 +1,4 @@
-"Example script for argparse_action"
+"Expose multiple functions as commands"
 import sys
 import argparse
 import argparse_action

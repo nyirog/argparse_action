@@ -1,7 +1,7 @@
 $ python3 main.py -h
 usage: main.py [-h] word
 
-Example script for argparse_action
+Expose single function
 
 positional arguments:
   word

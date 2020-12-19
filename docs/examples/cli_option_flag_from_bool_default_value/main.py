@@ -1,4 +1,4 @@
-"Example script for argparse_action"
+"CLI option flag from boolean default value"
 import sys
 import argparse
 import argparse_action

@@ -1,4 +1,4 @@
-"Example script for argparse_action"
+"Register command alias"
 import sys
 import argparse
 import argparse_action

@@ -1,7 +1,7 @@
 $ python3 main.py  -h
 usage: main.py [-h] command ...
 
-Example script for argparse_action
+Expose multiple functions as commands
 
 positional arguments:
   command

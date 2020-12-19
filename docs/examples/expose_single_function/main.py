@@ -1,4 +1,5 @@
-"Example script for argparse_action"
+"Expose single function"
+
 import argparse
 import argparse_action
 

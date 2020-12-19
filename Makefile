@@ -14,6 +14,10 @@ dev:
 clean:
 	-rm -rf .venv
 	-rm -rf docs/_build
+	-rm -rf docs/articles/tutorial.rst
 
-doc: dev
+docs/articles/tutorial.rst: docs/examples/*/*
+	python3 docs/examples/build.py > $@
+
+doc: dev docs/articles/tutorial.rst
 	.venv/bin/sphinx-build -b html docs docs/_build

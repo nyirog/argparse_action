@@ -1,4 +1,4 @@
-"Example script for argparse_action"
+"varg parameter is handled as nargs=* argument"
 import sys
 import argparse
 import argparse_action
