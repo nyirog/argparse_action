@@ -70,11 +70,8 @@ def _add_arguments(parser, func):
     sig = inspect.signature(func)
 
     for name, param in sig.parameters.items():
-        if param.kind == param.VAR_POSITIONAL:
-            parser.add_argument(name, nargs="*")
-
-        elif param.default == param.empty:
-            parser.add_argument(name, type=_get_annotation(param))
+        if _is_bool(param):
+            _add_bool_option(parser, name, param)
 
         else:
             _add_option(parser, name, param)
@@ -82,27 +79,21 @@ def _add_arguments(parser, func):
     return sig
 
 
-def _add_option(parser, name, param):
-    if _is_bool(param):
-        _add_bool_option(parser, name, param)
-    else:
-        _add_normal_option(parser, name, param)
-
-
 def _add_bool_option(parser, name, param):
     action = "store_false" if param.default else "store_true"
 
     parser.add_argument(
-        _conv_to_cli_option(name),
+        _conv_to_cli_option(name, param),
         default=param.default,
         action=action
     )
 
 
-def _add_normal_option(parser, name, param):
+def _add_option(parser, name, param):
     parser.add_argument(
-        _conv_to_cli_option(name),
+        _conv_to_cli_option(name, param),
         type=_get_annotation(param),
+        nargs=_get_nargs(param),
         default=_get_default(param)
     )
 
@@ -113,6 +104,10 @@ def _get_annotation(param):
 
 def _get_default(param):
     return param.default if param.default != param.empty else None
+
+
+def _get_nargs(param):
+    return "*" if param.kind == param.VAR_POSITIONAL else None
 
 
 def _is_bool(param):
@@ -155,8 +150,10 @@ def _get_varg_name(sig):
     return next(names, None)
 
 
-def _conv_to_cli_option(name):
-    if len(name) == 1:
+def _conv_to_cli_option(name, param):
+    if param.default == param.empty:
+        prefix = ""
+    elif len(name) == 1:
         prefix = "-"
     else:
         prefix = "--"
