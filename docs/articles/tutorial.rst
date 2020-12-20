@@ -9,6 +9,15 @@ The tutorial assumes that the example snippets are saved as ``main.py``.
 
 
 
+Short option can be defined with single character function argument
+-------------------------------------------------------------------
+
+
+.. literalinclude:: /examples/short_option/main.py
+  :language: python
+
+.. literalinclude:: /examples/short_option/call
+
 Register command alias
 ----------------------
 

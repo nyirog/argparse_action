@@ -208,6 +208,11 @@ class ArgparseActionTest(unittest.TestCase):
             namespace.action(namespace)
         )
 
+    def test_single_character_defaulted_argument_will_be_short_option(self):
+        self.decorate(func_with_defaulted_short_arg, "action")
+        namespace = self.parse_args("action -o option")
+        self.assertEqual("option", namespace.o)
+
 
 def simple_func():
     return "simple"
@@ -267,3 +272,7 @@ def func_with_varg_and_defaulted_arg(*args, option="spam"):
 
 def func_with_arg_varg_and_defaulted_arg(arg, *args, option="spam"):
     return [arg + a + option for a in args]
+
+
+def func_with_defaulted_short_arg(o="default"):
+    return o

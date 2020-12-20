@@ -156,7 +156,12 @@ def _get_varg_name(sig):
 
 
 def _conv_to_cli_option(name):
-    return "--" + _conv_to_cli_name(name)
+    if len(name) == 1:
+        prefix = "-"
+    else:
+        prefix = "--"
+
+    return prefix + _conv_to_cli_name(name)
 
 
 def _conv_to_cli_name(name):
