@@ -74,7 +74,7 @@ def _add_arguments(parser, func):
             _add_bool_option(parser, name, param)
 
         else:
-            _add_option(parser, name, param)
+            _add_argument(parser, name, param)
 
     return sig
 
@@ -89,7 +89,7 @@ def _add_bool_option(parser, name, param):
     )
 
 
-def _add_option(parser, name, param):
+def _add_argument(parser, name, param):
     parser.add_argument(
         _conv_to_cli_option(name, param),
         type=_get_annotation(param),

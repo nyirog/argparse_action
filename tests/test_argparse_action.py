@@ -214,7 +214,6 @@ class ArgparseActionTest(unittest.TestCase):
         namespace = self.parse_args("action -o option")
         self.assertEqual("option", namespace.o)
 
-
     def test_varg_annotation_is_handled_by_argparse(self):
         self.decorate(func_varg_with_annotation, "action")
 
@@ -225,10 +224,6 @@ class ArgparseActionTest(unittest.TestCase):
         namespace = self.parse_args("action 13 26")
         self.assertEqual([13, 26], namespace.args)
         self.assertEqual(39, namespace.action(namespace))
-
-    def test_argpasre_choices_are_created_from_enum_annotation(self):
-        self.decorate(func_arg_with_enum_annotation, "action")
-        # namespace = self.parse_args("action info")
 
 
 def simple_func():
@@ -297,13 +292,3 @@ def func_with_arg_varg_and_defaulted_arg(arg, *args, option="spam"):
 
 def func_with_defaulted_short_arg(o="default"):
     return o
-
-
-class Level(enum.Enum):
-    debug = enum.auto()
-    info = enum.auto()
-    error = enum.auto()
-
-
-def func_arg_with_enum_annotation(level: Level):
-    return level
