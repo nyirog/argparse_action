@@ -1,5 +1,6 @@
 import argparse
 import inspect
+import enum
 
 
 class Action:
@@ -94,21 +95,41 @@ def _add_argument(parser, name, param):
         _conv_to_cli_option(name, param),
         type=_get_annotation(param),
         nargs=_get_nargs(param),
-        default=_get_default(param)
+        default=_get_default(param),
+        choices=_get_choices(param),
     )
 
 
 def _get_annotation(param):
-    return param.annotation if param.annotation != param.empty else None
+    if param.annotation == param.empty or _is_enum(param):
+        return None
+
+    return param.annotation
 
 
 def _get_default(param):
-    return param.default if param.default != param.empty else None
+    if param.default == param.empty:
+        return None
+
+    if _is_enum(param):
+        return param.default.name
+
+    return param.default
 
 
 def _get_nargs(param):
     return "*" if param.kind == param.VAR_POSITIONAL else None
 
+
+def _get_choices(param):
+    if _is_enum(param):
+        return list(param.annotation.__members__)
+
+    return None
+
+
+def _is_enum(param):
+    return inspect.isclass(param.annotation) and issubclass(param.annotation, enum.Enum)
 
 def _is_bool(param):
     return isinstance(param.default, bool)
@@ -119,7 +140,8 @@ def _wrap_action(func, sig):
         namespace_vars = vars(namespace)
 
         args = [
-            namespace_vars[name]
+            _get_namespace_var(namespace, name, param)
+
             for name, param in sig.parameters.items()
             if param.kind not in {param.VAR_POSITIONAL, param.KEYWORD_ONLY}
         ]
@@ -127,10 +149,11 @@ def _wrap_action(func, sig):
         varg_name = _get_varg_name(sig)
 
         if varg_name is not None:
-            args.extend(namespace_vars[varg_name])
+            varg = _get_namespace_var(namespace, varg_name, sig.parameters[varg_name])
+            args.extend(varg)
 
         kwargs = {
-            name: namespace_vars[name]
+            name: _get_namespace_var(namespace, name, param)
             for name, param in sig.parameters.items()
             if param.kind == param.KEYWORD_ONLY
         }
@@ -148,6 +171,15 @@ def _get_varg_name(sig):
     )
 
     return next(names, None)
+
+
+def _get_namespace_var(namespace, name, param):
+    var = getattr(namespace, name)
+
+    if _is_enum(param):
+        var = param.annotation[var]
+
+    return var
 
 
 def _conv_to_cli_option(name, param):

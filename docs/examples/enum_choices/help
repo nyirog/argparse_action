@@ -1,0 +1,9 @@
+$ python3 main.py log -h
+usage: main.py log [-h] [--level {debug,info,error}] word
+
+positional arguments:
+  word
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --level {debug,info,error}

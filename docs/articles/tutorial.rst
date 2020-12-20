@@ -89,3 +89,16 @@ CLI option from default value
 .. literalinclude:: /examples/cli_option_from_default_value/call_sam
 
 .. literalinclude:: /examples/cli_option_from_default_value/call
+
+Enum annotation register argument choices
+-----------------------------------------
+
+
+.. literalinclude:: /examples/enum_choices/main.py
+  :language: python
+
+.. literalinclude:: /examples/enum_choices/help
+
+.. literalinclude:: /examples/enum_choices/call_default
+
+.. literalinclude:: /examples/enum_choices/call
