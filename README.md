@@ -45,9 +45,11 @@ make test
 
 ## Documentation
 
-Documentation can be build with the `doc` make target:
+Documentation can be build with the `doc` make target. To ensure the documentation build
+tools the `make dev` has to be executed once before `make doc`.
 
 ```
+make dev
 make doc
 ```
 
