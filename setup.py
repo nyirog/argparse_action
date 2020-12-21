@@ -7,7 +7,7 @@ with open("README.md") as fp:
 setup(
     name="argparse_action",
     version="0.1.1",
-    description="untility module for argparse to create cli ",
+    description="confgiure argparse from function signature",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="Apache 2",
