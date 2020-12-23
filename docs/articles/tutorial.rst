@@ -16,6 +16,8 @@ inject argpasre argument options
 .. literalinclude:: /examples/inject_argument_options/main.py
   :language: python
 
+.. literalinclude:: /examples/inject_argument_options/help
+
 .. literalinclude:: /examples/inject_argument_options/call
 
 Short option can be defined with single character function argument

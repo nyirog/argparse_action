@@ -1,0 +1,9 @@
+$ python3 main.py repeat -h
+usage: main.py repeat [-h] [-n] word
+
+positional arguments:
+  word
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -n

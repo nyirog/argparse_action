@@ -1,10 +1,5 @@
 import unittest
-import pathlib
-import importlib
-import sys
 import os
-import io
-import contextlib
 import subprocess
 
 
@@ -22,14 +17,14 @@ class TestExamples(unittest.TestCase):
             except ValueError:
                 continue
 
-            module = _import_main_module(root)
+            script = os.path.join(root, "main.py")
 
             for example in files:
                 example_file = os.path.join(root, example)
                 argv, stdout_sample = _parse_example_call(example_file)
 
                 with self.subTest(example_dir=root, example=example, argv=argv):
-                    exit_status, stdout = _eval_module(module, argv)
+                    exit_status, stdout = _eval_script(script, argv)
                     self.assertEqual(stdout_sample, stdout)
                     self.assertEqual(0, exit_status)
 
@@ -37,32 +32,18 @@ class TestExamples(unittest.TestCase):
 def _parse_example_call(exmaple_file):
     with open(exmaple_file) as fp:
         line = fp.readline()
-        argv = line.lstrip("$").split()[1:]
+        argv = line.lstrip("$").split()[2:]
         stdout = fp.read()
 
     return argv, stdout
 
 
-def _eval_module(module, argv):
-    sys.argv = argv
-    exit_status = 0
+def _eval_script(script, argv):
+    result = subprocess.run([".venv/bin/python", script] + argv, capture_output=True)
 
-    with io.StringIO() as buf, contextlib.redirect_stdout(buf):
-        try:
-            module.main()
+    output = result.stdout.decode()
 
-        except SystemExit as error:
-            exit_status = error.code
+    if result.stderr:
+        output += "STDERR:\n" + result.stderr.decode()
 
-        stdout = buf.getvalue()
-
-    return exit_status, stdout
-
-
-def _import_main_module(root):
-    path = os.path.join(root, "main.py")
-    spec = importlib.util.spec_from_file_location("main", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    return module
+    return result.returncode, output

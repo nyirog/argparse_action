@@ -37,7 +37,16 @@ HELLO
 pip install argparse_action
 ```
 
+## Configuration
+
+```
+make dev
+```
+
 ## Testing
+
+The `test` target requires a virtulenv where `argparse_action` is installed.
+The `dev` target creates that virtualenv under `.venv` directory.
 
 ```
 make test
@@ -49,7 +58,6 @@ Documentation can be build with the `doc` make target. To ensure the documentati
 tools the `make dev` has to be executed once before `make doc`.
 
 ```
-make dev
 make doc
 ```
 
