@@ -1,5 +1,6 @@
 import argparse
 import inspect
+import itertools
 import enum
 
 
@@ -20,7 +21,7 @@ class Action:
         self._parsers = parser.add_subparsers(dest='command', metavar='command')
         self._parsers.required = True
 
-    def add(self, *aliases):
+    def add(self, *aliases, **arg_options):
         """
         Register the decoreated function into command subparsers with the name
         of the function. The arguments and options are set by ``add_action``.
@@ -30,7 +31,7 @@ class Action:
 
         def wrapper(func):
             parser = self._add_parser(func, aliases)
-            add_action(parser, func)
+            add_action(parser, func, **arg_options)
 
             return func
 
@@ -45,7 +46,7 @@ class Action:
 
 
 
-def add_action(parser, func: callable):
+def add_action(parser, func: callable, **arg_options):
     """
     Registers arguments and options into ``parser`` from the signature of
     ``func``. A function wrapper is created from the ``func`` and stored in the
@@ -61,71 +62,87 @@ def add_action(parser, func: callable):
     The bool option negates its default value.
 
     *args parameters will be handled as nargs='*' arguments.
+
+    Keyword arguments of ``add_action`` are handled as extra argparse options
+    of the parsed arguments of ``func``. The name of the keyword argument has to
+    refer to a ``func`` argument which will be extended. The keyword argument
+    of ``add_action`` only extend the argparse options of the parsed ``func``
+    arguments the same rules apply to the extended arguments as the normal
+    ``func`` arguments.
     """
-    sig = _add_arguments(parser, func)
+    sig = _add_arguments(parser, func, arg_options)
     action = _wrap_action(func, sig)
     parser.set_defaults(action=action)
 
 
-def _add_arguments(parser, func):
+def _add_arguments(parser, func, arg_options):
     sig = inspect.signature(func)
 
     for name, param in sig.parameters.items():
-        if _is_bool(param):
-            _add_bool_option(parser, name, param)
+        options = _get_options(param)
+        options.update(arg_options.get(name, {}))
 
-        else:
-            _add_argument(parser, name, param)
+        parser.add_argument(
+            _conv_to_cli_option(name, param),
+            **options
+        )
 
     return sig
 
 
-def _add_bool_option(parser, name, param):
+def _get_options(param):
+    if _is_bool(param):
+        return _get_bool_options(param)
+
+    return dict(
+        itertools.chain(
+            _get_annotation(param),
+            _get_nargs(param),
+            _get_default(param),
+            _get_choices(param),
+        )
+    )
+
+
+def _get_bool_options(param):
     action = "store_false" if param.default else "store_true"
 
-    parser.add_argument(
-        _conv_to_cli_option(name, param),
+    return dict(
         default=param.default,
         action=action
     )
 
 
-def _add_argument(parser, name, param):
-    parser.add_argument(
-        _conv_to_cli_option(name, param),
-        type=_get_annotation(param),
-        nargs=_get_nargs(param),
-        default=_get_default(param),
-        choices=_get_choices(param),
-    )
-
-
 def _get_annotation(param):
     if param.annotation == param.empty or _is_enum(param):
-        return None
+        return
 
-    return param.annotation
+    yield "type", param.annotation
 
 
 def _get_default(param):
     if param.default == param.empty:
-        return None
+        return
 
-    if _is_enum(param):
-        return param.default.name
+    elif _is_enum(param):
+        yield "default", param.default.name
 
-    return param.default
+    else:
+        yield "default", param.default
 
 
 def _get_nargs(param):
-    return "*" if param.kind == param.VAR_POSITIONAL else None
+    if param.kind == param.VAR_POSITIONAL:
+        yield "nargs", "*"
+
+    return
 
 
 def _get_choices(param):
     if _is_enum(param):
-        return list(param.annotation.__members__)
+        yield "choices", list(param.annotation.__members__)
 
-    return None
+    return
 
 
 def _is_enum(param):

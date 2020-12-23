@@ -12,8 +12,8 @@ class ArgparseActionTest(unittest.TestCase):
         self.parser = argparse.ArgumentParser()
         self.action = argparse_action.Action(self.parser)
 
-    def decorate(self, func, *aliases):
-        wrapper = self.action.add(*aliases)
+    def decorate(self, func, *aliases, **arg_options):
+        wrapper = self.action.add(*aliases, **arg_options)
         wrapper(func)
 
     def parse_args(self, command_line):
@@ -236,6 +236,15 @@ class ArgparseActionTest(unittest.TestCase):
         self.assertEqual("info", namespace.level)
         self.assertEqual(Level.info, namespace.action(namespace))
 
+    def test_argparse_option_can_be_injected(self):
+        self.decorate(func_with_defaulted_int_arg, "action", n={"action": "count"})
+
+        namespace = self.parse_args("action")
+        self.assertEqual(0, namespace.n)
+
+        namespace = self.parse_args("action -nn")
+        self.assertEqual(2, namespace.n)
+
 
 def simple_func():
     return "simple"
@@ -313,3 +322,7 @@ class Level(enum.Enum):
 
 def func_with_enum_arg_annotation(level: Level):
     return level
+
+
+def func_with_defaulted_int_arg(n=0):
+    return n
