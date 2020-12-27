@@ -36,13 +36,6 @@ Installation
 
    pip install argparse_action
 
-Development
------------
-
-``argparse_action`` development is managed on github_.
-
-.. _github: https://github.com/nyirog/argparse_action
-
 Articles
 --------
 
@@ -51,6 +44,7 @@ Articles
 
    articles/getting_started
    articles/tutorial
+   articles/development
 
 API reference
 -------------
