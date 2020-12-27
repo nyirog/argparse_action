@@ -97,6 +97,8 @@ CLI option from default value
 .. literalinclude:: /examples/cli_option_from_default_value/main.py
   :language: python
 
+.. literalinclude:: /examples/cli_option_from_default_value/help
+
 .. literalinclude:: /examples/cli_option_from_default_value/call_sam
 
 .. literalinclude:: /examples/cli_option_from_default_value/call

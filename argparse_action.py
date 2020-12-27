@@ -130,6 +130,8 @@ def _get_default(param):
     else:
         yield "default", param.default
 
+    yield "help", "default: %(default)s"
+
 
 def _get_nargs(param):
     if param.kind == param.VAR_POSITIONAL:
