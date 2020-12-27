@@ -12,7 +12,7 @@ setup(
     long_description_content_type="text/markdown",
     license="Apache 2",
     maintainer="Nyiro Gergo",
-    maintainer_email="gergo.nyiro@gmail.com",
+    maintainer_email="gergo@nyiro.name",
     py_modules=["argparse_action"],
     python_requires='>=3.6',
     url="https://github.com/nyirog/argparse_action",
