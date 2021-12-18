@@ -43,9 +43,14 @@ at least two example calls e.g.:call and help.
 Release
 -------
 
-The version of a release should follow the practice of semantive versioning.
+The version of a release should follow the practice of semantic versioning.
 A separated patch should be created for the new release were only the version
 is bumped. This patch should be tagged and the tag should be the version number.
 
 The new release should be published on `pypi <https://pypi.org>`_ and the
 documentation should be updated on `readthedocs <https://readthedocs.org>`_.
+
+.. code-block::
+
+   python setup.py sdist
+   python -m twine upload dist/*
