@@ -245,6 +245,38 @@ class ArgparseActionTest(unittest.TestCase):
         namespace = self.parse_args("action -nn")
         self.assertEqual(2, namespace.n)
 
+    def test_handle_underscore_in_parameter(self):
+        self.decorate(func_with_underscore_in_param, "action")
+
+        namespace = self.parse_args("action underscore_param")
+
+        self.assertEqual("underscore_param", getattr(namespace, "my-param"))
+        self.assertEqual("underscore_param", namespace.action(namespace))
+
+    def test_handle_underscore_in_vargs(self):
+        self.decorate(func_with_underscore_in_vargs, "action")
+
+        namespace = self.parse_args("action p_1 p_2")
+
+        self.assertEqual(["p_1", "p_2"], getattr(namespace, "my-params"))
+        self.assertEqual("p_1:p_2", namespace.action(namespace))
+
+    def test_handle_underscore_in_kwargs(self):
+        self.decorate(func_with_underscore_in_kwargs, "action")
+
+        namespace = self.parse_args("action --kw-arg other")
+
+        self.assertEqual("other", getattr(namespace, "kw_arg"))
+        self.assertEqual("other", namespace.action(namespace))
+
+    def test_handle_underscore_in_defaulted_arg(self):
+        self.decorate(func_with_underscore_in_defaulted_arg, "action")
+
+        namespace = self.parse_args("action --default-param other")
+
+        self.assertEqual("other", getattr(namespace, "default_param"))
+        self.assertEqual("other", namespace.action(namespace))
+
 
 def simple_func():
     return "simple"
@@ -326,3 +358,19 @@ def func_with_enum_arg_annotation(level: Level):
 
 def func_with_defaulted_int_arg(n=0):
     return n
+
+
+def func_with_underscore_in_param(my_param):
+    return my_param
+
+
+def func_with_underscore_in_vargs(*my_params):
+    return ":".join(my_params)
+
+
+def func_with_underscore_in_kwargs(*, kw_arg="DEFAULT"):
+    return kw_arg
+
+
+def func_with_underscore_in_defaulted_arg(default_param="DEFAULT"):
+    return default_param

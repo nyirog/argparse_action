@@ -159,7 +159,11 @@ def _wrap_action(func, sig):
         namespace_vars = vars(namespace)
 
         args = [
-            _get_namespace_var(namespace, name, param)
+            _get_namespace_var(
+                namespace,
+                _conv_to_cli_name(name) if param.default == param.empty else name,
+                param
+            )
 
             for name, param in sig.parameters.items()
             if param.kind not in {param.VAR_POSITIONAL, param.KEYWORD_ONLY}
@@ -168,7 +172,7 @@ def _wrap_action(func, sig):
         varg_name = _get_varg_name(sig)
 
         if varg_name is not None:
-            varg = _get_namespace_var(namespace, varg_name, sig.parameters[varg_name])
+            varg = _get_namespace_var(namespace, _conv_to_cli_name(varg_name), sig.parameters[varg_name])
             args.extend(varg)
 
         kwargs = {
