@@ -42,6 +42,19 @@ Register command alias
 
 .. literalinclude:: /examples/register_command_alias/cmd_echo
 
+argparse_action logging helper
+------------------------------
+
+
+.. literalinclude:: /examples/logging/main.py
+  :language: python
+
+.. literalinclude:: /examples/logging/help
+
+.. literalinclude:: /examples/logging/call-on-info
+
+.. literalinclude:: /examples/logging/call
+
 Expose single function
 ----------------------
 
