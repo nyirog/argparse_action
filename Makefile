@@ -8,7 +8,7 @@ test:
 	python3 -m doctest argparse_action.py
 
 dev:
-	virtualenv .venv
+	python -m venv .venv
 	.venv/bin/pip install -e .
 	.venv/bin/pip install sphinx
 
