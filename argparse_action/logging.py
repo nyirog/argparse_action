@@ -35,7 +35,8 @@ def add_log_arguments(parser):
     destination_group = parser.add_mutually_exclusive_group()
     destination_group.add_argument(
         "--log-syslog",
-        action="store_true",
+        metavar="FACILITY",
+        choices=logging.handlers.SysLogHandler.facility_names,
         help="Log into syslog"
     )
     destination_group.add_argument(
