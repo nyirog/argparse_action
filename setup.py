@@ -13,7 +13,7 @@ setup(
     license="Apache 2",
     maintainer="Nyiro Gergo",
     maintainer_email="gergo@nyiro.name",
-    py_modules=["argparse_action"],
+    packages=["argparse_action"],
     python_requires='>=3.6',
     url="https://github.com/nyirog/argparse_action",
     project_urls={
