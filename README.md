@@ -1,5 +1,4 @@
-[![Python application](https://github.com/nyirog/argparse_action/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/nyirog/argparse_action/actions/workflows/python-app.yml)
-
+[![Makefile CI](https://github.com/nyirog/argparse_action/actions/workflows/makefile.yml/badge.svg?branch=master)](https://github.com/nyirog/argparse_action/actions/workflows/makefile.yml)
 # argparse_action
 
 `argparse_action` aims to be a minimalistic extension of `argparse` and creates
