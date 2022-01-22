@@ -14,7 +14,7 @@ action = argparse_action.Action(parser)
 def echo(word, upper=False):
     print(word.upper() if upper else word)
 
-namespace = pasrer.parse_args()
+namespace = parser.parse_args()
 namespace.action(namespace)
 ```
 
