@@ -1,7 +1,7 @@
 $ python3 main.py -h
 usage: main.py [-h] [--log-level {debug,warning,info,error,fatal,critical}]
                [--log-format LOG_FORMAT] [--log-datefmt LOG_DATEFMT]
-               [--log-syslog | --log-none | --log-file LOG_FILE]
+               [--log-syslog FACILITY | --log-none | --log-file LOG_FILE]
                command ...
 
 argparse_action logging helper
@@ -19,6 +19,7 @@ options:
                         %(message)s'
   --log-datefmt LOG_DATEFMT
                         default is '%Y-%m-%d %H:%M:%S'
-  --log-syslog          Log into syslog
+  --log-syslog FACILITY
+                        Log into syslog
   --log-none            Disable logging
   --log-file LOG_FILE   Log into LOG_FILE
