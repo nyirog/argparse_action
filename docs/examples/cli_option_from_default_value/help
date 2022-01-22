@@ -4,6 +4,6 @@ usage: main.py echo [-h] [--name NAME] word
 positional arguments:
   word
 
-optional arguments:
+options:
   -h, --help   show this help message and exit
   --name NAME  default: joe

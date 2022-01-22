@@ -4,6 +4,6 @@ usage: main.py repeat [-h] [-n] word
 positional arguments:
   word
 
-optional arguments:
+options:
   -h, --help  show this help message and exit
   -n          default: 0

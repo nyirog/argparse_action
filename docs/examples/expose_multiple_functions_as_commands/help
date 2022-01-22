@@ -8,5 +8,5 @@ positional arguments:
     echo      echo the cli argument
     oche      echo the revered cli argument
 
-optional arguments:
+options:
   -h, --help  show this help message and exit

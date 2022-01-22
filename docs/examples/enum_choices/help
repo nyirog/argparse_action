@@ -4,7 +4,7 @@ usage: main.py log [-h] [--level {debug,info,error}] word
 positional arguments:
   word
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --level {debug,info,error}
                         default: info

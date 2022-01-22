@@ -10,7 +10,7 @@ positional arguments:
   command
     emit-debug
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --log-level {debug,warning,info,error,fatal,critical}
                         default is 'info'
