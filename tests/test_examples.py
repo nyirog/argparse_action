@@ -6,6 +6,7 @@ import subprocess
 class TestExamples(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.maxDiff = None
         cls.example_dir = os.path.abspath(
             os.path.join(__file__, "..", "..", "docs", "examples")
         )
