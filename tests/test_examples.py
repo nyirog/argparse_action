@@ -31,16 +31,18 @@ class TestExamples(unittest.TestCase):
 
 
 def _parse_example_call(exmaple_file):
-    with open(exmaple_file) as fp:
-        line = fp.readline()
+    with open(exmaple_file, encoding="ascii") as file_desc:
+        line = file_desc.readline()
         argv = line.lstrip("$").split()[2:]
-        stdout = fp.read()
+        stdout = file_desc.read()
 
     return argv, stdout
 
 
 def _eval_script(script, argv):
-    result = subprocess.run([".venv/bin/python", script] + argv, capture_output=True)
+    result = subprocess.run(
+        [".venv/bin/python", script] + argv, capture_output=True, check=True
+    )
 
     output = result.stdout.decode()
 

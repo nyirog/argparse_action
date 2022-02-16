@@ -115,7 +115,7 @@ def _get_default(param):
     if param.default == param.empty:
         return
 
-    elif _is_enum(param):
+    if _is_enum(param):
         yield "default", param.default.name
 
     else:
@@ -128,14 +128,10 @@ def _get_nargs(param):
     if param.kind == param.VAR_POSITIONAL:
         yield "nargs", "*"
 
-    return
-
 
 def _get_choices(param):
     if _is_enum(param):
         yield "choices", list(param.annotation.__members__)
-
-    return
 
 
 def _is_enum(param):
@@ -148,8 +144,6 @@ def _is_bool(param):
 
 def _wrap_action(func, sig):
     def action(namespace):
-        namespace_vars = vars(namespace)
-
         args = [
             _get_namespace_var(
                 namespace,

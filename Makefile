@@ -1,11 +1,11 @@
-.PHONY: install test dev clean doc check check-format format
+.PHONY: install test dev clean doc check check-format format lint
 
 DEV_BUILD_FLAG = .venv/DEV_BUILD_FLAG
 
 install:
 	python3 setup.py install
 
-check: check-format test
+check: check-format test lint
 
 test: $(DEV_BUILD_FLAG)
 	.venv/bin/python -m unittest discover tests/
@@ -16,7 +16,7 @@ dev: $(DEV_BUILD_FLAG)
 $(DEV_BUILD_FLAG):
 	python -m venv .venv
 	.venv/bin/pip install -e .
-	.venv/bin/pip install sphinx black==22.1.0
+	.venv/bin/pip install sphinx black==22.1.0 pylint
 	touch $(DEV_BUILD_FLAG)
 
 clean:
@@ -35,3 +35,11 @@ format: $(DEV_BUILD_FLAG)
 
 check-format: $(DEV_BUILD_FLAG)
 	.venv/bin/black --check argparse_action tests
+
+lint: $(DEV_BUILD_FLAG)
+	.venv/bin/pylint \
+		--disable missing-function-docstring \
+		--disable missing-class-docstring \
+		--disable missing-module-docstring \
+		--disable too-few-public-methods \
+		argparse_action tests

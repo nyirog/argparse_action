@@ -1,4 +1,3 @@
-import enum
 import logging.handlers
 import types
 
@@ -63,11 +62,11 @@ def _create_handler(namespace):
     if namespace.log_none:
         return logging.NullHandler()
 
-    elif namespace.log_file:
+    if namespace.log_file:
         return logging.FileHandler(namespace.log_file)
 
-    elif namespace.log_syslog:
+    if namespace.log_syslog:
         facility = logging.handlers.SysLogHandler.facility_names[namespace.log_syslog]
-        return logging.handlers.SysLogHandler()
+        return logging.handlers.SysLogHandler(facility=facility)
 
     return logging.StreamHandler()

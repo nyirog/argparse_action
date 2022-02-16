@@ -7,7 +7,7 @@ import enum
 import argparse_action
 
 
-class ArgparseActionTest(unittest.TestCase):
+class ArgparseActionTest(unittest.TestCase):  # pylint: disable=too-many-public-methods
     def setUp(self):
         self.parser = argparse.ArgumentParser()
         self.action = argparse_action.Action(self.parser)
@@ -276,6 +276,9 @@ class ArgparseActionTest(unittest.TestCase):
         self.assertEqual("other", namespace.action(namespace))
 
 
+# pylint: disable=invalid-name
+
+
 def simple_func():
     return "simple"
 
@@ -293,7 +296,7 @@ def func_arg_with_annotation(number: int):
 
 
 def func_with_defaulted_arg(option="default"):
-    return arg
+    return option
 
 
 def func_with_arg_and_defaulted_arg(arg, option="default"):

@@ -77,6 +77,14 @@ make check-format
 make format
 ```
 
+### Linter
+
+The `lint` target runs `pylint` over the argparse_action project.
+
+```sh
+make lint
+```
+
 ## Documentation
 
 Documentation can be build with the `doc` make target. To ensure the documentation build
