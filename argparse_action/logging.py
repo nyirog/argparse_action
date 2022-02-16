@@ -67,6 +67,6 @@ def _create_handler(namespace):
 
     if namespace.log_syslog:
         facility = logging.handlers.SysLogHandler.facility_names[namespace.log_syslog]
-        return logging.handlers.SysLogHandler(facility=facility)
+        return logging.handlers.SysLogHandler(facility=facility, address="/dev/null")
 
     return logging.StreamHandler()
