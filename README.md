@@ -44,13 +44,37 @@ pip install argparse_action
 make dev
 ```
 
-## Testing
+## CI check
+
+The `check` make target collects the targets which are run by the CI server.
+
+```sh
+make check
+```
+
+### Testing
 
 The `test` target requires a virtulenv where `argparse_action` is installed.
 The `dev` target creates that virtualenv under `.venv` directory.
 
 ```
 make test
+```
+
+### Formatting
+
+The argparse_action project is formatted with `black`. The CI check invokes the
+`check-format` target to ensure that the python files are formatted with
+`black`.
+
+```sh
+make check-format
+```
+
+`black` can be run with the `format` make target.
+
+```sh
+make format
 ```
 
 ## Documentation

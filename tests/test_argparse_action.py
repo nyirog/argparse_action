@@ -199,14 +199,12 @@ class ArgparseActionTest(unittest.TestCase):
 
         namespace = self.parse_args("action ham. egg. eggegg.")
         self.assertEqual(
-            ["ham.egg.spam", "ham.eggegg.spam"],
-            namespace.action(namespace)
+            ["ham.egg.spam", "ham.eggegg.spam"], namespace.action(namespace)
         )
 
         namespace = self.parse_args("action ham. egg. eggegg. --option cheese")
         self.assertEqual(
-            ["ham.egg.cheese", "ham.eggegg.cheese"],
-            namespace.action(namespace)
+            ["ham.egg.cheese", "ham.eggegg.cheese"], namespace.action(namespace)
         )
 
     def test_single_character_defaulted_argument_will_be_short_option(self):
@@ -302,7 +300,7 @@ def func_with_arg_and_defaulted_arg(arg, option="default"):
     return arg + option
 
 
-def func_defaulted_arg_with_annotation(option: int=10):
+def func_defaulted_arg_with_annotation(option: int = 10):
     return option + 10
 
 

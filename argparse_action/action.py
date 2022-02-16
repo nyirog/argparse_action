@@ -18,7 +18,7 @@ class Action:
     """
 
     def __init__(self, parser: argparse.ArgumentParser):
-        self._parsers = parser.add_subparsers(dest='command', metavar='command')
+        self._parsers = parser.add_subparsers(dest="command", metavar="command")
         self._parsers.required = True
 
     def add(self, *aliases, **arg_options):
@@ -39,11 +39,8 @@ class Action:
 
     def _add_parser(self, func, aliases):
         return self._parsers.add_parser(
-            name=_conv_to_cli_name(func.__name__),
-            help=func.__doc__,
-            aliases=aliases
+            name=_conv_to_cli_name(func.__name__), help=func.__doc__, aliases=aliases
         )
-
 
 
 def add_action(parser, func: callable, **arg_options):
@@ -82,10 +79,7 @@ def _add_arguments(parser, func, arg_options):
         options = _get_options(param)
         options.update(arg_options.get(name, {}))
 
-        parser.add_argument(
-            _conv_to_cli_option(name, param),
-            **options
-        )
+        parser.add_argument(_conv_to_cli_option(name, param), **options)
 
     return sig
 
@@ -107,10 +101,7 @@ def _get_options(param):
 def _get_bool_options(param):
     action = "store_false" if param.default else "store_true"
 
-    return dict(
-        default=param.default,
-        action=action
-    )
+    return dict(default=param.default, action=action)
 
 
 def _get_annotation(param):
@@ -150,6 +141,7 @@ def _get_choices(param):
 def _is_enum(param):
     return inspect.isclass(param.annotation) and issubclass(param.annotation, enum.Enum)
 
+
 def _is_bool(param):
     return isinstance(param.default, bool)
 
@@ -162,9 +154,8 @@ def _wrap_action(func, sig):
             _get_namespace_var(
                 namespace,
                 _conv_to_cli_name(name) if param.default == param.empty else name,
-                param
+                param,
             )
-
             for name, param in sig.parameters.items()
             if param.kind not in {param.VAR_POSITIONAL, param.KEYWORD_ONLY}
         ]
@@ -172,7 +163,9 @@ def _wrap_action(func, sig):
         varg_name = _get_varg_name(sig)
 
         if varg_name is not None:
-            varg = _get_namespace_var(namespace, _conv_to_cli_name(varg_name), sig.parameters[varg_name])
+            varg = _get_namespace_var(
+                namespace, _conv_to_cli_name(varg_name), sig.parameters[varg_name]
+            )
             args.extend(varg)
 
         kwargs = {
