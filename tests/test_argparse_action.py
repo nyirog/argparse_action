@@ -275,6 +275,21 @@ class ArgparseActionTest(unittest.TestCase):  # pylint: disable=too-many-public-
         self.assertEqual("other", getattr(namespace, "default_param"))
         self.assertEqual("other", namespace.action(namespace))
 
+    def test_handle_type_annotation_in_vargs(self):
+        self.decorate(func_with_annotated_vargs, "action")
+
+        namespace = self.parse_args("action 1 2")
+        self.assertEqual([1, 2], namespace.params)
+        self.assertEqual((1, 2), namespace.action(namespace))
+
+    def test_handle_type_annotation_with_enum_in_vargs(self):
+        self.decorate(func_with_enum_annotated_vargs, "action")
+
+        namespace = self.parse_args("action debug info")
+        self.assertEqual(["debug", "info"], namespace.params)
+        self.assertEqual((Level.debug, Level.info), namespace.action(namespace))
+
+
 
 # pylint: disable=invalid-name
 
@@ -375,3 +390,11 @@ def func_with_underscore_in_kwargs(*, kw_arg="DEFAULT"):
 
 def func_with_underscore_in_defaulted_arg(default_param="DEFAULT"):
     return default_param
+
+
+def func_with_annotated_vargs(*params: int):
+    return params
+
+
+def func_with_enum_annotated_vargs(*params: Level):
+    return params
