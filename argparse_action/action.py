@@ -1,3 +1,4 @@
+import collections.abc
 import argparse
 import inspect
 import itertools
@@ -187,7 +188,10 @@ def _get_namespace_var(namespace, name, param):
     var = getattr(namespace, name)
 
     if _is_enum(param):
-        var = param.annotation[var]
+        if _is_sequence(var):
+            var = [param.annotation[item] for item in var]
+        else:
+            var = param.annotation[var]
 
     return var
 
@@ -205,3 +209,10 @@ def _conv_to_cli_option(name, param):
 
 def _conv_to_cli_name(name):
     return name.replace("_", "-")
+
+
+def _is_sequence(value):
+    """
+    Check that `value` is a sequence but not str.
+    """
+    return not isinstance(value, str) and isinstance(value, collections.abc.Sequence)
