@@ -1,8 +1,10 @@
 import unittest
 import argparse
 import contextlib
+import typing
 import io
 import enum
+import collections.abc
 
 import argparse_action
 
@@ -289,6 +291,33 @@ class ArgparseActionTest(unittest.TestCase):  # pylint: disable=too-many-public-
         self.assertEqual(["debug", "info"], namespace.params)
         self.assertEqual((Level.debug, Level.info), namespace.action(namespace))
 
+    def test_append_options_with_sequence_default_value(self):
+        self.decorate(func_with_sequence_default, "action")
+
+        namespace = self.parse_args("action --option a --option b")
+        self.assertEqual(["a", "b"], namespace.option)
+        self.assertEqual(["a", "b"], namespace.action(namespace))
+
+    def test_sequence_options_can_be_annotated(self):
+        self.decorate(func_with_annotated_sequence_default, "action")
+
+        namespace = self.parse_args("action --option 1 --option 2")
+        self.assertEqual([1, 2], namespace.option)
+        self.assertEqual(3, namespace.action(namespace))
+
+    def test_sequence_options_can_be_annotated_with_enum(self):
+        self.decorate(func_with_sequence_default_annotated_with_enum, "action")
+
+        namespace = self.parse_args("action --option debug --option info")
+        self.assertEqual(["debug", "info"], namespace.option)
+        self.assertEqual([Level.debug, Level.info], namespace.action(namespace))
+
+    def test_sequence_options_can_be_annotated_with_collections_abc(self):
+        self.decorate(func_sequence_annotation_with_collections_abc, "action")
+
+        namespace = self.parse_args("action --option debug --option info")
+        self.assertEqual(["debug", "info"], namespace.option)
+        self.assertEqual([Level.debug, Level.info], namespace.action(namespace))
 
 
 # pylint: disable=invalid-name
@@ -398,3 +427,19 @@ def func_with_annotated_vargs(*params: int):
 
 def func_with_enum_annotated_vargs(*params: Level):
     return params
+
+
+def func_with_sequence_default(option=()):
+    return option
+
+
+def func_with_annotated_sequence_default(option: typing.Sequence[int] = ()):
+    return sum(option)
+
+
+def func_with_sequence_default_annotated_with_enum(option: typing.Sequence[Level] = ()):
+    return option
+
+
+def func_sequence_annotation_with_collections_abc(option: collections.abc.Sequence[Level] = ()):
+    return option
