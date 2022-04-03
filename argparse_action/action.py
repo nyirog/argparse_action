@@ -2,6 +2,8 @@ import collections.abc
 import argparse
 import inspect
 import itertools
+import typing
+import types
 import enum
 
 
@@ -95,6 +97,7 @@ def _get_options(param):
             _get_nargs(param),
             _get_default(param),
             _get_choices(param),
+            _get_action(param),
         )
     )
 
@@ -106,18 +109,26 @@ def _get_bool_options(param):
 
 
 def _get_annotation(param):
-    if param.annotation == param.empty or _is_enum(param):
+    if param.annotation == param.empty or _is_enum(param.annotation):
         return
 
-    yield "type", param.annotation
+    if seq_type := _is_sequence(param.default) and _is_typed_sequence(param.annotation):
+        if not _is_typed_enum_sequence(param.annotation):
+            yield "type", seq_type
+
+    else:
+        yield "type", param.annotation
 
 
 def _get_default(param):
     if param.default == param.empty:
         return
 
-    if _is_enum(param):
+    if _is_enum(param.annotation):
         yield "default", param.default.name
+
+    elif _is_sequence(param.default):
+        yield "default", []
 
     else:
         yield "default", param.default
@@ -131,12 +142,25 @@ def _get_nargs(param):
 
 
 def _get_choices(param):
-    if _is_enum(param):
-        yield "choices", list(param.annotation.__members__)
+    if enum_annotation := _is_enum(param.annotation):
+        yield "choices", list(enum_annotation.__members__)
+
+    elif enum_annotation := _is_typed_enum_sequence(param.annotation):
+        yield "choices", list(enum_annotation.__members__)
 
 
-def _is_enum(param):
-    return inspect.isclass(param.annotation) and issubclass(param.annotation, enum.Enum)
+def _get_action(param):
+    if not _is_sequence(param.default):
+        return
+
+    yield "action", "append"
+
+
+def _is_enum(annotation):
+    if inspect.isclass(annotation) and issubclass(annotation, enum.Enum):
+        return annotation
+
+    return False
 
 
 def _is_bool(param):
@@ -187,11 +211,13 @@ def _get_varg_name(sig):
 def _get_namespace_var(namespace, name, param):
     var = getattr(namespace, name)
 
-    if _is_enum(param):
+    if enum_annotation := _is_enum(param.annotation):
         if _is_sequence(var):
-            var = [param.annotation[item] for item in var]
+            var = [enum_annotation[item] for item in var]
         else:
             var = param.annotation[var]
+    elif enum_annotation := _is_typed_enum_sequence(param.annotation):
+        var = [enum_annotation[item] for item in var]
 
     return var
 
@@ -216,3 +242,22 @@ def _is_sequence(value):
     Check that `value` is a sequence but not str.
     """
     return not isinstance(value, str) and isinstance(value, collections.abc.Sequence)
+
+
+def _is_typed_sequence(annotation):
+    #  pylint: disable=protected-access
+    if (
+        isinstance(annotation, (types.GenericAlias, typing._GenericAlias))
+        and issubclass(annotation.__origin__, collections.abc.Sequence)
+        and len(annotation.__args__) == 1
+    ):
+        return annotation.__args__[0]
+
+    return False
+
+
+def _is_typed_enum_sequence(annotation):
+    if sequence_type := _is_typed_sequence(annotation):
+        return _is_enum(sequence_type)
+
+    return False
