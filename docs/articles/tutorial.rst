@@ -110,6 +110,15 @@ Register command alias
 
 .. literalinclude:: /examples/register_command_alias/cmd_p
 
+Default log handler can be defined
+----------------------------------
+
+
+.. literalinclude:: /examples/default_log_handler/call
+
+.. literalinclude:: /examples/default_log_handler/main.py
+  :language: python
+
 Enum annotation register argument choices
 -----------------------------------------
 
