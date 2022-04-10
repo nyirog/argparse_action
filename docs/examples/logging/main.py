@@ -1,4 +1,4 @@
-"argparse_action logging helper"
+"Initiate python logging with argparse_action"
 import argparse
 import argparse_action
 import logging

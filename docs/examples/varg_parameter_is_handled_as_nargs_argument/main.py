@@ -1,4 +1,4 @@
-"varg parameter is handled as nargs=* argument"
+"Arbitrary argument is handled as nargs=* argument"
 import sys
 import argparse
 import argparse_action

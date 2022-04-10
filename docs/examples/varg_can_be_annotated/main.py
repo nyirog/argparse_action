@@ -1,4 +1,4 @@
-"varg can be annoted"
+"Arbitrary argument can be annoted"
 import sys
 import argparse
 import argparse_action

@@ -441,5 +441,7 @@ def func_with_sequence_default_annotated_with_enum(option: typing.Sequence[Level
     return option
 
 
-def func_sequence_annotation_with_collections_abc(option: collections.abc.Sequence[Level] = ()):
+def func_sequence_annotation_with_collections_abc(
+    option: collections.abc.Sequence[Level] = (),
+):
     return option
