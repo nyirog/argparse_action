@@ -1,4 +1,4 @@
-"Sequence default value invoke 'append' argparse action"
+"Argparse 'append' action can be forced with sequence default value"
 import sys
 import enum
 import collections.abc

@@ -4,7 +4,7 @@ usage: main.py [-h] [--log-level {debug,warning,info,error,fatal,critical}]
                [--log-syslog FACILITY | --log-none | --log-file LOG_FILE]
                command ...
 
-argparse_action logging helper
+Initiate python logging with argparse_action
 
 positional arguments:
   command

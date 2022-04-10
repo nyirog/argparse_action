@@ -1,4 +1,4 @@
-"inject argpasre argument options"
+"Extra argpasre options can be injected"
 import sys
 import argparse
 import argparse_action
