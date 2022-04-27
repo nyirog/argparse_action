@@ -5,6 +5,7 @@ import typing
 import io
 import enum
 import collections.abc
+import sys
 
 import argparse_action
 
@@ -298,6 +299,7 @@ class ArgparseActionTest(unittest.TestCase):  # pylint: disable=too-many-public-
         self.assertEqual(["a", "b"], namespace.option)
         self.assertEqual(["a", "b"], namespace.action(namespace))
 
+    @unittest.skipIf(sys.version_info < (3, 9), f"Unsupported feature on python {sys.version_info}")
     def test_sequence_options_can_be_annotated(self):
         self.decorate(func_with_annotated_sequence_default, "action")
 
@@ -305,6 +307,7 @@ class ArgparseActionTest(unittest.TestCase):  # pylint: disable=too-many-public-
         self.assertEqual([1, 2], namespace.option)
         self.assertEqual(3, namespace.action(namespace))
 
+    @unittest.skipIf(sys.version_info < (3, 9), f"Unsupported feature on python {sys.version_info}")
     def test_sequence_options_can_be_annotated_with_enum(self):
         self.decorate(func_with_sequence_default_annotated_with_enum, "action")
 
@@ -312,6 +315,7 @@ class ArgparseActionTest(unittest.TestCase):  # pylint: disable=too-many-public-
         self.assertEqual(["debug", "info"], namespace.option)
         self.assertEqual([Level.debug, Level.info], namespace.action(namespace))
 
+    @unittest.skipIf(sys.version_info < (3, 9), f"Unsupported feature on python {sys.version_info}")
     def test_sequence_options_can_be_annotated_with_collections_abc(self):
         self.decorate(func_sequence_annotation_with_collections_abc, "action")
 
@@ -433,15 +437,16 @@ def func_with_sequence_default(option=()):
     return option
 
 
-def func_with_annotated_sequence_default(option: typing.Sequence[int] = ()):
-    return sum(option)
+if sys.version_info >= (3, 9):
+    def func_with_annotated_sequence_default(option: typing.Sequence[int] = ()):
+        return sum(option)
 
 
-def func_with_sequence_default_annotated_with_enum(option: typing.Sequence[Level] = ()):
-    return option
+    def func_with_sequence_default_annotated_with_enum(option: typing.Sequence[Level] = ()):
+        return option
 
 
-def func_sequence_annotation_with_collections_abc(
-    option: collections.abc.Sequence[Level] = (),
-):
-    return option
+    def func_sequence_annotation_with_collections_abc(
+        option: collections.abc.Sequence[Level] = (),
+    ):
+        return option
