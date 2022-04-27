@@ -5,6 +5,7 @@ import itertools
 import typing
 import types
 import enum
+import sys
 
 
 class Action:
@@ -246,7 +247,8 @@ def _is_sequence(value):
 def _get_typed_sequence(annotation):
     #  pylint: disable=protected-access
     if (
-        isinstance(annotation, (types.GenericAlias, typing._GenericAlias))
+        sys.version_info >= (3, 9)
+        and isinstance(annotation, (types.GenericAlias, typing._GenericAlias))
         and issubclass(annotation.__origin__, collections.abc.Sequence)
         and len(annotation.__args__) == 1
     ):
