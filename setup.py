@@ -6,7 +6,7 @@ with open("README.md") as fp:
 
 setup(
     name="argparse_action",
-    version="0.5.1",
+    version="0.5.2",
     description="configure argparse from function signature",
     long_description=long_description,
     long_description_content_type="text/markdown",
