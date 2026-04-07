@@ -32,6 +32,11 @@ $ python3 my_script.py echo --upper hello
 HELLO
 ```
 
+## Why use this?
+- Reduces boilerplate for CLI tools
+- Automatically maps function signatures to CLI arguments
+- Supports type annotations and defaults
+
 ## Installation
 
 ```
